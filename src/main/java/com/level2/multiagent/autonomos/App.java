@@ -6,6 +6,8 @@ import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import processing.core.PApplet;
+
 /**
  * Hello world!
  *
@@ -22,6 +24,7 @@ public class App
     	dimiurgos = setup(args);
     	if(dimiurgos!=null)
     	{
+    		//PApplet.main(new String[] { "--present", "com.level2.social.processing.BasicProcessingSketch" });
     		dimiurgos.run();
     	}
     }

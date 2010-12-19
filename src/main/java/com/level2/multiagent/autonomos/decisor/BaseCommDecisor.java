@@ -2,46 +2,28 @@ package com.level2.multiagent.autonomos.decisor;
 
 import java.math.BigDecimal;
 
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.level2.multiagent.autonomos.IAgent;
 import com.level2.ojalgo.Probabilities;
 
-public class BaseCommDecisor implements ICommDecisor {
+public abstract class BaseCommDecisor implements ICommDecisor {
 	public static final Logger logger = LoggerFactory.getLogger(BaseCommDecisor.class);
-	
-	private BigDecimal kSpeaker;
-	private BigDecimal kListener;
-	
+
+	protected BigDecimal kSpeaker;
+	protected BigDecimal kListener;
+
 	public BaseCommDecisor()
 	{
-		kSpeaker = BigDecimal.ONE.divide(BigDecimal.valueOf(2.0));
+		kSpeaker = BigDecimal.valueOf(0.2);
 		kListener = BigDecimal.ONE.divide(BigDecimal.valueOf(2.0));
 	}
 
-	public BigDecimal[] compute(BigDecimal[] values, int selectedIndex, Boolean succeded)
-	{
-		BigDecimal Bk = succeded ? BigDecimal.ONE : BigDecimal.ZERO;
-		for(int i=0; i<values.length;i++)
-		{
-			BigDecimal newValue;
-			if(i==selectedIndex)
-			{
-				// Selected
-				newValue = values[i].add(kSpeaker.multiply((BigDecimal.ONE.subtract(values[i]))).multiply(Bk));
-				values[i] = newValue;
-			}
-			else
-			{
-				// Not selected
-				newValue = values[i].subtract(kSpeaker.multiply(values[i]).multiply(Bk));
-				values[i] = newValue;
-			}
-		}
-		return values;
-	}
-	
+
+	public abstract BigDecimal[] compute(BigDecimal[] values, int selectedIndex, Boolean succeded);
+
 	public void updateSpeaker(IAgent speaker, int meaningIndex, int symbolIndex, Boolean succeded)
 	{
 		BigDecimal[] symbolRow = speaker.getSymbols(meaningIndex);
@@ -53,47 +35,115 @@ public class BaseCommDecisor implements ICommDecisor {
 			{
 				logger.error("We are not using probabilities for symbols!");
 			}
-		}		
+		}
+		//
+		speaker.setSymbols(meaningIndex, resultRow);
+		symbolRow = speaker.getSymbols(meaningIndex);
 	}
 	
+	public void updateListener(IAgent listener, int meaningIndex, int symbolIndex, Boolean succeded)
+	{
+		BigDecimal[] meaningsCol = listener.getMeanings(symbolIndex);
+		BigDecimal[] resultCol = compute(meaningsCol,meaningIndex, succeded);
+		if(logger.isDebugEnabled())
+		{
+			// Do sanity checks
+			if(!Probabilities.isProbability(resultCol))
+			{
+				logger.error("We are not using probabilities for symbols!");
+			}
+		}
+		//
+		listener.setMeanings(symbolIndex, resultCol);
+		listener.getMeanings(symbolIndex);
+		//symbolRow = speaker.getSymbols(meaningIndex);
+	}
+
+	/**
+	 * Will make them chat using selected algorithm
+	 */
 	@Override
 	public Boolean chat(IAgent speaker, IAgent listener)
 	{
 		Boolean commSuccess=false;
 		int meanings=speaker.getSymbols();
+		int timesSuccess=0;
+		
 		for(int i=0; i<meanings; i++)
 		{
 			int symbol = getTransmittedSymbolIndex(speaker, i);
 			int receptMeaning = getMeaningIndexForSymbol(listener, symbol);
-			
+
 			if(i==receptMeaning)
 			{
-				commSuccess=true;
+				timesSuccess++;
 				logger.debug("Communication succeded!");
 				updateSpeaker(speaker, i, symbol, true);
+				updateListener(listener,i,receptMeaning, true);
 			}
 			else
 			{
 				logger.debug("Communication error!");
 				updateSpeaker(speaker, i, symbol, false);
+				updateListener(listener,i,receptMeaning, false);
 			}
 		}
+
+		// Everything must be understood to be a success
+		if(meanings==timesSuccess)
+			commSuccess=true;
+
+		
 		return commSuccess;
 	}
-	
+
+	protected void logSelectedOption(BigDecimal[] array)
+	{
+		try
+		{
+			logger.debug(String.format("| %1.3f %1.3f %1.3f |", 
+					array[0], array[1], array[2]));
+		}catch(IllegalArgumentException ex)
+		{
+			Log.error(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Returns the symbol to be transmitted based on related probabilities.
+	 * 
+	 * Current matrix is defined as follows:
+	 * 
+	 * MS s1 s2 s3
+	 * m1
+	 * m2
+	 * m3
+	 * 
+	 * So one of the values of the row represented by the meaning will be returned
+	 * 
+	 * @param speaker
+	 * @param meaningIndex
+	 * @return
+	 */
 	protected int getTransmittedSymbolIndex(IAgent speaker, int meaningIndex)
 	{
 		int symbols=speaker.getSymbols(), indexSymbol = -1;
 		BigDecimal[] symbolRow = speaker.getSymbols(meaningIndex);
+
+
+
 		if(logger.isDebugEnabled())
 		{
+			logger.debug("Transmitted");
+			logSelectedOption(symbolRow);
+
 			// Do sanity checks
 			if(!Probabilities.isProbability(symbolRow))
 			{
 				logger.error("We are not using probabilities for symbols!");
 			}
 		}
-		
+
 		for(int i=0; i<symbols; i++)
 		{
 			if(indexSymbol>=0)
@@ -107,17 +157,35 @@ public class BaseCommDecisor implements ICommDecisor {
 			{
 				indexSymbol = i;
 			}
-				
+
 		}
 		return indexSymbol;
 	}
 
+	/**
+	 * 
+	 * 
+	 * Current matrix is defined as follows:
+	 * 
+	 * MS s1 s2 s3
+	 * m1
+	 * m2
+	 * m3
+	 * 
+	 * 
+	 * @param listener
+	 * @param symbolIndex
+	 * @return
+	 */
 	protected int getMeaningIndexForSymbol(IAgent listener, int symbolIndex)
 	{
 		int symbols=listener.getSymbols(), meaningIndex = -1;
 		BigDecimal[] meaningCol = listener.getMeanings(symbolIndex);
 		if(logger.isDebugEnabled())
 		{
+			logger.debug("Meaning");
+			logSelectedOption(meaningCol);
+
 			// Do sanity checks
 			if(!Probabilities.isProbability(meaningCol))
 			{
@@ -138,7 +206,7 @@ public class BaseCommDecisor implements ICommDecisor {
 			{
 				meaningIndex = i;
 			}
-				
+
 		}
 		return meaningIndex;
 	}

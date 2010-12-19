@@ -8,7 +8,7 @@ import com.level2.multiagent.autonomos.decisor.ICommDecisor;
 public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 
 	private List<IAgent> population;
-	private int iteration;
+	private BasicPopulationStatistics stats;
 	private ICommDecisor decisor;
 	
 	 
@@ -16,7 +16,7 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 	{
 		this.population = population;
 		this.decisor = decisor;
-		iteration=0;
+		this.stats=new BasicPopulationStatistics();
 	}
 	
 	@Override
@@ -30,11 +30,33 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 			{
 				if(speakerIndex!=listenerIndex)
 				{
-					decisor.chat(population.get(speakerIndex), population.get(listenerIndex));
+					if(decisor.chat(population.get(speakerIndex), population.get(listenerIndex)))
+					{
+						stats.chatSucceded();
+					}
+					else
+						stats.chatError();
 				}
 			}
 		}
-		return iteration++;
+		return stats.iterationDone();
 	}
 	
+	@Override
+	public int getCurrentIteration()
+	{
+		return stats.getIteration();
+	}
+	
+	@Override
+	public void logStats()
+	{
+		stats.logStatistics();
+	}
+	
+	@Override
+	public IBasicPopulationStatistics getStats()
+	{
+		return this.stats;
+	}
 }

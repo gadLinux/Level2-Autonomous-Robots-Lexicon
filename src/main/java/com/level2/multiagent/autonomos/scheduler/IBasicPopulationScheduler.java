@@ -5,4 +5,10 @@ public interface IBasicPopulationScheduler {
 
 	public int doIteration();
 
+	public int getCurrentIteration();
+
+	public void logStats();
+
+	public IBasicPopulationStatistics getStats();
+
 }

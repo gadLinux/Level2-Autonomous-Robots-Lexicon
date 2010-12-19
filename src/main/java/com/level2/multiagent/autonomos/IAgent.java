@@ -13,4 +13,6 @@ public interface IAgent {
 	public void setSymbols(int symbols);
 	public BigDecimal[] getSymbols(int meaningIndex);
 	public BigDecimal[] getMeanings(int symbolIndex);
+	public void setSymbols(int meaningIndex, BigDecimal[] newSymbols);
+	public void setMeanings(int symbolIndex, BigDecimal[] newMeanings);
 }
