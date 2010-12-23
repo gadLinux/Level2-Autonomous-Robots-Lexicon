@@ -6,7 +6,7 @@ import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.level2.multiagent.autonomos.IAgent;
+import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.ojalgo.Probabilities;
 
 public abstract class BaseCommDecisor implements ICommDecisor {
@@ -30,15 +30,11 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		BigDecimal[] resultRow = compute(symbolRow,symbolIndex, succeded);
 		if(logger.isDebugEnabled())
 		{
-			// Do sanity checks
-			if(!Probabilities.isProbability(resultRow))
-			{
-				logger.error("We are not using probabilities for symbols!");
-			}
+
 		}
 		//
 		speaker.setSymbols(meaningIndex, resultRow);
-		symbolRow = speaker.getSymbols(meaningIndex);
+		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
 	
 	public void updateListener(IAgent listener, int meaningIndex, int symbolIndex, Boolean succeded)
@@ -47,15 +43,11 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		BigDecimal[] resultCol = compute(meaningsCol,meaningIndex, succeded);
 		if(logger.isDebugEnabled())
 		{
-			// Do sanity checks
-			if(!Probabilities.isProbability(resultCol))
-			{
-				logger.error("We are not using probabilities for symbols!");
-			}
+
 		}
 		//
 		listener.setMeanings(symbolIndex, resultCol);
-		listener.getMeanings(symbolIndex);
+		//listener.getMeanings(symbolIndex);
 		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
 
@@ -69,6 +61,7 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		int meanings=speaker.getSymbols();
 		int timesSuccess=0;
 		
+		logger.debug(String.format("Chatting agent %d and agent %d", speaker.getAgentNumber(), listener.getAgentNumber()));
 		for(int i=0; i<meanings; i++)
 		{
 			int symbol = getTransmittedSymbolIndex(speaker, i);
@@ -88,7 +81,7 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 				updateListener(listener,i,receptMeaning, false);
 			}
 		}
-
+		logger.debug(String.format("Finish chatting agent %d and agent %d", speaker.getAgentNumber(), listener.getAgentNumber()));
 		// Everything must be understood to be a success
 		if(meanings==timesSuccess)
 			commSuccess=true;
@@ -109,6 +102,7 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		}
 	}
 
+	
 	/**
 	 * Returns the symbol to be transmitted based on related probabilities.
 	 * 
@@ -136,12 +130,6 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		{
 			logger.debug("Transmitted");
 			logSelectedOption(symbolRow);
-
-			// Do sanity checks
-			if(!Probabilities.isProbability(symbolRow))
-			{
-				logger.error("We are not using probabilities for symbols!");
-			}
 		}
 
 		for(int i=0; i<symbols; i++)
@@ -185,12 +173,6 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		{
 			logger.debug("Meaning");
 			logSelectedOption(meaningCol);
-
-			// Do sanity checks
-			if(!Probabilities.isProbability(meaningCol))
-			{
-				logger.error("We are not using probabilities for meanings!");
-			}
 		}
 
 		for(int i=0; i<symbols; i++)

@@ -1,6 +1,8 @@
-package com.level2.multiagent.autonomos;
+package com.level2.multiagent.autonomos.agents;
 
 import java.math.BigDecimal;
+
+import org.ojalgo.array.Array2D;
 
 public interface IAgent {
 
@@ -15,4 +17,14 @@ public interface IAgent {
 	public BigDecimal[] getMeanings(int symbolIndex);
 	public void setSymbols(int meaningIndex, BigDecimal[] newSymbols);
 	public void setMeanings(int symbolIndex, BigDecimal[] newMeanings);
+	
+	public Array2D<BigDecimal> getReceptionMatrix();
+	public Array2D<BigDecimal> getSendMatrix();
+	
+	public void logMatrix();
+	
+	
+	public boolean meaningSended(BigDecimal[] symbols);
+	public boolean symbolSended(BigDecimal[] meanings);
+	
 }

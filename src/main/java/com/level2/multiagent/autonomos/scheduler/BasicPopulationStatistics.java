@@ -7,6 +7,7 @@ import com.level2.multiagent.autonomos.decisor.LRICommDecisor;
 
 public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public static final Logger logger = LoggerFactory.getLogger(BasicPopulationStatistics.class);
+	public static final Logger loggerResult = LoggerFactory.getLogger("resultFile");
 
 
 	protected int iteration;
@@ -15,13 +16,18 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 
 	public BasicPopulationStatistics()
 	{
-
+		loggerResult.info("# This file contains information from one execution");
+		loggerResult.info("# Author: Gonzalo Aguilar Delgado <gaguilar@aguilardelgado.com>");
+		loggerResult.info("# Iteration\tChats\tSucceded\tError");
 	}
 	
 	@Override
-	public float getSucceedRatio()
+	public double getSucceedRatio()
 	{
-		return chatsSucceded/chats;
+		Double result = 0.0;
+		if(this.chats>0)
+			result = new Double(this.chatsSucceded)/new Double(this.chats);
+		return result;
 	}
 
 	@Override
@@ -29,6 +35,10 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	{
 		logger.info(String.format("Iteration %d, chats %d -> Succeded %d vs Error %d", 
 					iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
+		
+		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
+				iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
+	
 	}
 
 
@@ -46,9 +56,17 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	@Override
 	public int iterationDone()
 	{
+
 		return iteration++;
 	}
 
+	@Override
+	public void resetIterationStats()
+	{
+		this.chatsSucceded=0;
+		this.chats=0;
+	}
+	
 	public int getIteration() {
 		return iteration;
 	}

@@ -6,6 +6,8 @@ public interface IBasicPopulationStatistics {
 
 	int iterationDone();
 
-	float getSucceedRatio();
+	double getSucceedRatio();
+
+	void resetIterationStats();
 
 }

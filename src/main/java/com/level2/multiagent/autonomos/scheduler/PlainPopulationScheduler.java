@@ -2,7 +2,7 @@ package com.level2.multiagent.autonomos.scheduler;
 
 import java.util.List;
 
-import com.level2.multiagent.autonomos.IAgent;
+import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
 
 public class PlainPopulationScheduler implements IBasicPopulationScheduler {

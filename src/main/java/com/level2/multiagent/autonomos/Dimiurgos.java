@@ -7,10 +7,13 @@ import joptsimple.OptionSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.level2.multiagent.autonomos.agents.DeterministicAgent;
+import com.level2.multiagent.autonomos.agents.IAgent;
+import com.level2.multiagent.autonomos.agents.ProbabilisticAgent;
+import com.level2.multiagent.autonomos.decisor.ACOCommDecisor;
 import com.level2.multiagent.autonomos.decisor.BaseCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
 import com.level2.multiagent.autonomos.decisor.LRICommDecisor;
-import com.level2.multiagent.autonomos.probabilistic.UnoAgent;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationScheduler;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationStatistics;
 import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
@@ -18,7 +21,7 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(2);
+	private Integer totalAgentNumber = new Integer(100);
 	private ArrayList<IAgent> agents;
 	private Integer iterationsSucceful= new Integer(0);
 
@@ -31,7 +34,7 @@ public class Dimiurgos {
 		
 		for(Integer i = 0; i<totalAgentNumber; i++)
 		{
-			IAgent newAgent = new UnoAgent();
+			IAgent newAgent = new DeterministicAgent();
 			
 			newAgent.initialize();
 			
@@ -42,18 +45,19 @@ public class Dimiurgos {
 	
 	public void run()
 	{
-		ICommDecisor LRIDecisor = new LRICommDecisor();
-		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, LRIDecisor);
+		ICommDecisor ACODecisor = new ACOCommDecisor();
+		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
 		int iterations = 1000;
 		boolean stopCondition=false;
 		
-		while(sched.doIteration()<iterations && !stopCondition)
+		while(!stopCondition && sched.doIteration()<iterations)
 		{
 			//logger.debug("Iteration {} done!", sched.getCurrentIteration());
 			sched.logStats();
 			IBasicPopulationStatistics stats = sched.getStats();
-			logger.debug(String.format("Current succes ratio %f", stats.getSucceedRatio()));
+			logger.info(String.format("Current succes ratio %f", stats.getSucceedRatio()));
 			stopCondition = checkStopCondition(stats);
+			stats.resetIterationStats();
 		}
 			
 	}
