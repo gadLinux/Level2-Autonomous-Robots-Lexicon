@@ -10,4 +10,6 @@ public interface IBasicPopulationStatistics {
 
 	void resetIterationStats();
 
+	void logStepStatistics();
+
 }

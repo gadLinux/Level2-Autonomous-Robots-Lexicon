@@ -1,5 +1,7 @@
 package com.level2.multiagent.autonomos.scheduler;
 
+import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,15 +12,22 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public static final Logger loggerResult = LoggerFactory.getLogger("resultFile");
 
 
+	protected int chatsPerRound;
+	protected int totalChats;
+	protected int totalChatsSucceded;
 	protected int iteration;
 	protected int chats;
 	protected int chatsSucceded;
 
-	public BasicPopulationStatistics()
+	public BasicPopulationStatistics(int chats)
 	{
+		chatsPerRound=chats;
 		loggerResult.info("# This file contains information from one execution");
 		loggerResult.info("# Author: Gonzalo Aguilar Delgado <gaguilar@aguilardelgado.com>");
 		loggerResult.info("# Iteration\tChats\tSucceded\tError");
+		loggerResult.info(String.format("\t%d\t\t%d\t%d\t\t%d", 
+				iteration, totalChats, this.chatsSucceded, (this.totalChats-this.chatsSucceded)));
+		totalChats=0;
 	}
 	
 	@Override
@@ -33,11 +42,25 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	@Override
 	public void logStatistics()
 	{
+		
 		logger.info(String.format("Iteration %d, chats %d -> Succeded %d vs Error %d", 
 					iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
 		
-		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
-				iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
+//		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
+//				iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
+		loggerResult.info(String.format(Locale.US, "\t%d\t%d\t%d\t\t%d", 
+				iteration, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+	}
+	
+	@Override
+	public void logStepStatistics()
+	{
+		double  percentage= new Double(chats)/new Double(this.chatsPerRound);
+		logger.info(String.format(Locale.US, "Iteration %f, chats %d -> Succeded %d vs Error %d", 
+				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+		
+		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d", 
+				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
 	
 	}
 
@@ -45,12 +68,15 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public void chatSucceded()
 	{
 		chats++;
+		totalChats++;
 		chatsSucceded++;
+		totalChatsSucceded++;
 	}
 
 	public void chatError()
 	{
 		chats++;
+		totalChats++;
 	}
 
 	@Override

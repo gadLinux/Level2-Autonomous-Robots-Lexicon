@@ -21,7 +21,7 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(100);
+	private Integer totalAgentNumber = new Integer(300);
 	private ArrayList<IAgent> agents;
 	private Integer iterationsSucceful= new Integer(0);
 

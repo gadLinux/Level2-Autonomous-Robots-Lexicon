@@ -16,7 +16,8 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 	{
 		this.population = population;
 		this.decisor = decisor;
-		this.stats=new BasicPopulationStatistics();
+		int popSize = population.size();
+		this.stats=new BasicPopulationStatistics((popSize*popSize)-popSize);
 	}
 	
 	@Override
@@ -38,6 +39,7 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 						stats.chatError();
 				}
 			}
+			stats.logStepStatistics();
 		}
 		return stats.iterationDone();
 	}
