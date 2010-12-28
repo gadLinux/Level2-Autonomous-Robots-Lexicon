@@ -48,6 +48,7 @@ public class DeterministicAgent extends BaseAgent {
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		randomizeMatrix(commMatrix);
 	}
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.level2.multiagent.autonomos.agents.DeterministicAgent;
 import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.multiagent.autonomos.agents.ProbabilisticAgent;
+import com.level2.multiagent.autonomos.agents.fitness.DiagonalFitnessFunction;
 import com.level2.multiagent.autonomos.decisor.ACOCommDecisor;
 import com.level2.multiagent.autonomos.decisor.BaseCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
@@ -34,9 +35,10 @@ public class Dimiurgos {
 		
 		for(Integer i = 0; i<totalAgentNumber; i++)
 		{
-			IAgent newAgent = new DeterministicAgent();
 			
-			newAgent.initialize();
+			IAgent newAgent = new DeterministicAgent(new DiagonalFitnessFunction());
+			
+			//newAgent.initialize();
 			
 			agents.add(newAgent);
 			logger.debug("Creating {} agent of a total of {}", newAgent.getAgentNumber(), totalAgentNumber);

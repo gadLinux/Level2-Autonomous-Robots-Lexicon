@@ -35,6 +35,7 @@ public class ProbabilisticAgent extends BaseAgent {
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		randomizeMatrix(sendMatrix,true);
 		randomizeMatrix(receptMatrix,false);
 		logMatrix(receptMatrix, sendMatrix);

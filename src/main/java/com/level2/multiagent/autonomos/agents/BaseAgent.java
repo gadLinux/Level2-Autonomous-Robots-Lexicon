@@ -9,6 +9,8 @@ import org.ojalgo.array.Array2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.level2.multiagent.autonomos.agents.fitness.IFitnessFunction;
+
 
 public abstract class BaseAgent implements IAgent {
 	public static final Logger logger = LoggerFactory.getLogger(BaseAgent.class);
@@ -16,8 +18,21 @@ public abstract class BaseAgent implements IAgent {
 	
 	private int agentNumber;
 	private Random random;
+	private IFitnessFunction fitnessFunction;
 	
 	public BaseAgent()
+	{
+		initialize();
+		this.fitnessFunction = null;
+	}
+	
+	public BaseAgent(IFitnessFunction fitness)
+	{
+		initialize();
+		this.fitnessFunction = fitness;
+	}
+	
+	public void initialize()
 	{
 		setAgentNumber(nextAgentNumber++);
 		SecureRandom srandom = new SecureRandom();
@@ -28,13 +43,13 @@ public abstract class BaseAgent implements IAgent {
 		logger.debug("New agent spawned!");
 	}
 	
+	
 	@Override 
 	public Double generateRandom()
 	{
 		return random.nextDouble();
 	}
 
-	public abstract void initialize();
 	
 	@Override
 	public void setAgentNumber(int agentNumber) {
@@ -100,11 +115,16 @@ public abstract class BaseAgent implements IAgent {
 			
 			//(meaningIndex, i);
 		}
-		
+
+		BigDecimal fitness = BigDecimal.ZERO;
+
+		if(this.fitnessFunction!=null)
+			fitness = this.fitnessFunction.computeFitness(sendMatrix);
 		if(logger.isDebugEnabled())
 		{
 			logger.debug("Result Matrix:");
 			logMatrix();
+			logger.debug(String.format("with fitness %d", fitness));
 		}
 	}
 	
@@ -142,10 +162,17 @@ public abstract class BaseAgent implements IAgent {
 			}
 			//(meaningIndex, i);
 		}
+
+		BigDecimal fitness = BigDecimal.ZERO;
+
+		if(this.fitnessFunction!=null)
+			fitness = this.fitnessFunction.computeFitness(receptMatrix);
+
 		if(logger.isDebugEnabled())
 		{
 			logger.debug("Result Matrix:");
 			logMatrix();
+			logger.debug(String.format("with fitness %d", fitness));
 		}
 
 	}
