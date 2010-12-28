@@ -43,7 +43,7 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public void logStatistics()
 	{
 		
-		logger.info(String.format("Iteration %d, chats %d -> Succeded %d vs Error %d", 
+		logger.info(String.format("Round %d, chats in this round %d -> Succeded %d vs Error %d", 
 					iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
 		
 //		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
@@ -56,8 +56,8 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public void logStepStatistics()
 	{
 		double  percentage= new Double(chats)/new Double(this.chatsPerRound);
-		logger.info(String.format(Locale.US, "Iteration %f, chats %d -> Succeded %d vs Error %d", 
-				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+		logger.info(String.format(Locale.US, "Step Iteration %d [%f], chats %d -> Succeded %d vs Error %d", 
+				iteration, percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
 		
 		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d", 
 				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));

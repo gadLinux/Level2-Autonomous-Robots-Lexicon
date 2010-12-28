@@ -2,10 +2,15 @@ package com.level2.multiagent.autonomos.scheduler;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.level2.multiagent.autonomos.agents.IAgent;
+import com.level2.multiagent.autonomos.decisor.BaseCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
 
 public class PlainPopulationScheduler implements IBasicPopulationScheduler {
+	public static final Logger logger = LoggerFactory.getLogger(PlainPopulationScheduler.class);
 
 	private List<IAgent> population;
 	private BasicPopulationStatistics stats;
@@ -31,6 +36,7 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 			{
 				if(speakerIndex!=listenerIndex)
 				{
+					logger.debug(String.format("Talking agent %d -> %d", speakerIndex, listenerIndex));
 					if(decisor.chat(population.get(speakerIndex), population.get(listenerIndex)))
 					{
 						stats.chatSucceded();
