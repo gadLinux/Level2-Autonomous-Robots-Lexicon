@@ -6,21 +6,21 @@ import org.ojalgo.array.Array2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.level2.multiagent.autonomos.agents.BaseAgent;
+import com.level2.multiagent.autonomos.agents.IAgent;
 
 public class DiagonalFitnessFunction implements IFitnessFunction {
 	public static final Logger logger = LoggerFactory.getLogger(DiagonalFitnessFunction.class);
 
 	private BigDecimal fitness;
 	private int meanings, symbols;
-	
-	public DiagonalFitnessFunction(int meanings, int symbols)
+
+	public DiagonalFitnessFunction(IAgent agent)
 	{
-		this.meanings = meanings;
-		this.symbols = symbols;
+		this.meanings = agent.getMeaningNumber();
+		this.symbols = agent.getSymbolNumber();
 		fitness=BigDecimal.ZERO;
 	}
-	
+
 	/**
 	 * Computes fitness based on diagonal values, the result value will 
 	 * be between 0 and 1.
@@ -31,11 +31,15 @@ public class DiagonalFitnessFunction implements IFitnessFunction {
 	public BigDecimal computeFitness(Array2D<BigDecimal> commMatrix)
 	{
 		fitness = BigDecimal.ZERO;
-		for(int i=0; i<symbols; i++)
+		if(symbols>0)
 		{
-			fitness.add(commMatrix.get(i, i));
+			for(int i=0; i<symbols; i++)
+			{
+				fitness.add(commMatrix.get(i, i));
+			}
+
+			fitness.divide(BigDecimal.valueOf(symbols));
 		}
-		fitness.divide(BigDecimal.valueOf(symbols));
 		return fitness;
 	}
 
@@ -62,7 +66,7 @@ public class DiagonalFitnessFunction implements IFitnessFunction {
 	public void setSymbols(int symbols) {
 		this.symbols = symbols;
 	}
-	
-	
-	
+
+
+
 }

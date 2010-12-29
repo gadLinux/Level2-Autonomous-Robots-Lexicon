@@ -28,12 +28,13 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	{
 		BigDecimal[] symbolRow = speaker.getSymbols(meaningIndex);
 		BigDecimal[] resultRow = compute(symbolRow,symbolIndex, succeded);
+		speaker.setSymbols(meaningIndex, resultRow);
 		if(logger.isDebugEnabled())
 		{
-
+			logger.debug("New matrix:");
+			speaker.logMatrix();
 		}
 		//
-		speaker.setSymbols(meaningIndex, resultRow);
 		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
 	
@@ -41,12 +42,14 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	{
 		BigDecimal[] meaningsCol = listener.getMeanings(symbolIndex);
 		BigDecimal[] resultCol = compute(meaningsCol,meaningIndex, succeded);
+		listener.setMeanings(symbolIndex, resultCol);
+
 		if(logger.isDebugEnabled())
 		{
-
+			logger.debug("New matrix:");
+			listener.logMatrix();
 		}
 		//
-		listener.setMeanings(symbolIndex, resultCol);
 		//listener.getMeanings(symbolIndex);
 		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
@@ -58,25 +61,24 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	public Boolean chat(IAgent speaker, IAgent listener)
 	{
 		Boolean commSuccess=false;
-		int meanings=speaker.getSymbols();
+		int meanings=speaker.getMeaningNumber();
 		int timesSuccess=0;
 		
-		logger.debug(String.format("Chatting agent %d and agent %d", speaker.getAgentNumber(), listener.getAgentNumber()));
 		for(int i=0; i<meanings; i++)
 		{
 			int symbol = getTransmittedSymbolIndex(speaker, i);
 			int receptMeaning = getMeaningIndexForSymbol(listener, symbol);
 
-			if(i==receptMeaning)
+			if(symbol==receptMeaning)
 			{
 				timesSuccess++;
-				logger.debug("Communication succeded!");
+				logger.debug("Meaning understood!");
 				updateSpeaker(speaker, i, symbol, true);
 				updateListener(listener,i,receptMeaning, true);
 			}
 			else
 			{
-				logger.debug("Communication error!");
+				logger.debug("I don't understand!");
 				updateSpeaker(speaker, i, symbol, false);
 				updateListener(listener,i,receptMeaning, false);
 			}
@@ -121,14 +123,14 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	 */
 	protected int getTransmittedSymbolIndex(IAgent speaker, int meaningIndex)
 	{
-		int symbols=speaker.getSymbols(), indexSymbol = -1;
+		int symbols=speaker.getSymbolNumber(), indexSymbol = -1;
 		BigDecimal[] symbolRow = speaker.getSymbols(meaningIndex);
 
 
 
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("Transmitted");
+			logger.debug("Symbols for meaning {}.", meaningIndex);
 			logSelectedOption(symbolRow);
 		}
 
@@ -167,11 +169,11 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	 */
 	protected int getMeaningIndexForSymbol(IAgent listener, int symbolIndex)
 	{
-		int symbols=listener.getSymbols(), meaningIndex = -1;
+		int symbols=listener.getSymbolNumber(), meaningIndex = -1;
 		BigDecimal[] meaningCol = listener.getMeanings(symbolIndex);
 		if(logger.isDebugEnabled())
 		{
-			logger.debug("Meaning");
+			logger.debug("Meaning for symbol {}.", symbolIndex);
 			logSelectedOption(meaningCol);
 		}
 

@@ -22,7 +22,7 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(10);
+	private Integer totalAgentNumber = new Integer(2);
 	private ArrayList<IAgent> agents;
 	private Integer iterationsSucceful= new Integer(0);
 
@@ -36,12 +36,13 @@ public class Dimiurgos {
 		for(Integer i = 0; i<totalAgentNumber; i++)
 		{
 			
-			IAgent newAgent = new DeterministicAgent(new DiagonalFitnessFunction());
+			IAgent newAgent = new DeterministicAgent(3,3);
+			newAgent.setFitnessFunction(new DiagonalFitnessFunction(newAgent));
 			
 			//newAgent.initialize();
 			
 			agents.add(newAgent);
-			logger.debug("Creating {} agent of a total of {}", newAgent.getAgentNumber(), totalAgentNumber);
+			logger.debug("Created {} agent of a total of {}", newAgent.getAgentNumber(), totalAgentNumber);
 		}
 	}
 	

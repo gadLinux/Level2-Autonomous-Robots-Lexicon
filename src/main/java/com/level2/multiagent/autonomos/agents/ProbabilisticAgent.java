@@ -22,20 +22,16 @@ public class ProbabilisticAgent extends BaseAgent {
 	private Array2D<BigDecimal> receptMatrix;
 	private Array2D<BigDecimal> sendMatrix;
 
-	private int symbols;
-
-	public ProbabilisticAgent()
+	public ProbabilisticAgent(int symbols, int meanings)
 	{
-		super();
-		symbols=3;
-
-		receptMatrix = Array2D.makeBig(symbols, symbols);
-		sendMatrix = Array2D.makeBig(symbols, symbols);
+		super(symbols,meanings);
+		initializeMatrices();
 	}
 
-	@Override
-	public void initialize() {
-		super.initialize();
+
+	public void initializeMatrices() {
+		receptMatrix = Array2D.makeBig(this.getMeaningNumber(), this.getSymbolNumber());
+		sendMatrix = Array2D.makeBig(this.getMeaningNumber(), this.getSymbolNumber());
 		randomizeMatrix(sendMatrix,true);
 		randomizeMatrix(receptMatrix,false);
 		logMatrix(receptMatrix, sendMatrix);
@@ -43,10 +39,10 @@ public class ProbabilisticAgent extends BaseAgent {
 
 	public void randomizeMatrix(Array2D<BigDecimal> matrix, boolean byRows)
 	{
-		for(int i=0; i<symbols; i++)
+		for(int i=0; i<this.getSymbolNumber(); i++)
 		{
-			BigDecimal[] row = generateProbability(symbols);
-			for(int j=0; j<symbols; j++)
+			BigDecimal[] row = generateProbability(this.getSymbolNumber());
+			for(int j=0; j<this.getSymbolNumber(); j++)
 			{
 				if(byRows)
 					matrix.set(i, j, row[j]);
@@ -56,17 +52,6 @@ public class ProbabilisticAgent extends BaseAgent {
 		}
 	}
 
-
-
-	@Override
-	public int getSymbols() {
-		return symbols;
-	}
-
-	@Override
-	public void setSymbols(int symbols) {
-		this.symbols = symbols;
-	}
 
 	@Override
 	public boolean meaningSended(BigDecimal[] symbols)
@@ -106,7 +91,7 @@ public class ProbabilisticAgent extends BaseAgent {
 	{
 		logger.debug("Agent {} matrices:", this.getAgentNumber());
 		logger.debug("|-------SEND--------| |--------REC--------|");
-		for(int i=0; i<symbols; i++)
+		for(int i=0; i<this.getSymbolNumber(); i++)
 		{
 			try
 			{

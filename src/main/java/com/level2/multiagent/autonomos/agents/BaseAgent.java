@@ -19,20 +19,18 @@ public abstract class BaseAgent implements IAgent {
 	private int agentNumber;
 	private Random random;
 	private IFitnessFunction fitnessFunction;
-	
-	public BaseAgent()
+	private int symbolNumber, meaningNumber;
+
+	public BaseAgent(int symbols, int meanings)
 	{
-		initialize();
+		setupAgent();
+		this.symbolNumber=symbols;
+		this.meaningNumber=meanings;
 		this.fitnessFunction = null;
 	}
 	
-	public BaseAgent(IFitnessFunction fitness)
-	{
-		initialize();
-		this.fitnessFunction = fitness;
-	}
 	
-	public void initialize()
+	private void setupAgent()
 	{
 		setAgentNumber(nextAgentNumber++);
 		SecureRandom srandom = new SecureRandom();
@@ -61,6 +59,31 @@ public abstract class BaseAgent implements IAgent {
 		return agentNumber;
 	}
 	
+	
+	
+	
+	
+	
+	public int getSymbolNumber() {
+		return symbolNumber;
+	}
+
+
+	public void setSymbolNumber(int symbolNumber) {
+		this.symbolNumber = symbolNumber;
+	}
+
+
+	public int getMeaningNumber() {
+		return meaningNumber;
+	}
+
+
+	public void setMeaningNumber(int meaningNumber) {
+		this.meaningNumber = meaningNumber;
+	}
+
+
 	/*
 	 * Communication stuff
 	 */
@@ -78,14 +101,14 @@ public abstract class BaseAgent implements IAgent {
 
 
 	public BigDecimal[] getSymbols(int meaningIndex) {
-		BigDecimal[] symbols = new BigDecimal[getSymbols()];
+		BigDecimal[] symbols = new BigDecimal[getSymbolNumber()];
 		Array2D<BigDecimal> sendMatrix = getSendMatrix();
 		
 		if(logger.isDebugEnabled())
 			logMatrix();
 
 
-		for(int i=0;i<getSymbols(); i++)
+		for(int i=0;i<getSymbolNumber(); i++)
 		{
 			symbols[i] = sendMatrix.get(meaningIndex, i);
 		}
@@ -101,7 +124,7 @@ public abstract class BaseAgent implements IAgent {
 	public void setSymbols(int meaningIndex, BigDecimal[] newSymbols) {
 		Array2D<BigDecimal> sendMatrix = getSendMatrix();
 		
-		for(int i=0;i<getSymbols(); i++)
+		for(int i=0;i<getSymbolNumber(); i++)
 		{
 			// Hack
 			if(newSymbols[i].compareTo(new BigDecimal(0.0001)) < 0)
@@ -120,26 +143,26 @@ public abstract class BaseAgent implements IAgent {
 
 		if(this.fitnessFunction!=null)
 			fitness = this.fitnessFunction.computeFitness(sendMatrix);
-		if(logger.isDebugEnabled())
-		{
-			logger.debug("Result Matrix:");
-			logMatrix();
-			logger.debug(String.format("with fitness %d", fitness));
-		}
+//		if(logger.isDebugEnabled())
+//		{
+//			logger.debug("Result Matrix:");
+//			logMatrix();
+//			logger.debug(String.format("With fitness %f", fitness));
+//		}
 	}
 	
 	/**
 	 * Returns stored meanings for a selected symbol 
 	 */
 	public BigDecimal[] getMeanings(int symbolIndex) {
-		BigDecimal[] meanings = new BigDecimal[getSymbols()];
+		BigDecimal[] meanings = new BigDecimal[getMeaningNumber()];
 		Array2D<BigDecimal> receptMatrix = getReceptionMatrix();
 		
 		if(logger.isDebugEnabled())
 			logMatrix();
 
 
-		for(int i=0;i<getSymbols(); i++)
+		for(int i=0;i<getMeaningNumber(); i++)
 		{
 			meanings[i] = receptMatrix.get(i,symbolIndex);
 		}
@@ -149,7 +172,7 @@ public abstract class BaseAgent implements IAgent {
 	
 	public void setMeanings(int symbolIndex, BigDecimal[] newMeanings) {
 		Array2D<BigDecimal> receptMatrix = getReceptionMatrix();
-		for(int i=0;i<getSymbols(); i++)
+		for(int i=0;i<getMeaningNumber(); i++)
 		{
 			// Hack
 			if(newMeanings[i].compareTo(new BigDecimal(0.0009)) < 0)
@@ -168,15 +191,28 @@ public abstract class BaseAgent implements IAgent {
 		if(this.fitnessFunction!=null)
 			fitness = this.fitnessFunction.computeFitness(receptMatrix);
 
-		if(logger.isDebugEnabled())
-		{
-			logger.debug("Result Matrix:");
-			logMatrix();
-			logger.debug(String.format("with fitness %d", fitness));
-		}
+//		if(logger.isDebugEnabled())
+//		{
+//			logger.debug("Result Matrix:");
+//			logMatrix();
+//			logger.debug(String.format("with fitness %s", fitness.toPlainString()));
+//		}
 
 	}
 	
+	
+	
+	
+	@Override
+	public IFitnessFunction getFitnessFunction() {
+		return fitnessFunction;
+	}
+
+	@Override
+	public void setFitnessFunction(IFitnessFunction fitnessFunction) {
+		this.fitnessFunction = fitnessFunction;
+	}
+
 	/*
 	 * Mathematic fuctions
 	 */
