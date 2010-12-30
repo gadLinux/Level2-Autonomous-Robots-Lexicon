@@ -18,7 +18,6 @@ public abstract class BaseAgent implements IAgent {
 	
 	private int agentNumber;
 	private Random random;
-	private IFitnessFunction fitnessFunction;
 	private int symbolNumber, meaningNumber;
 
 	public BaseAgent(int symbols, int meanings)
@@ -26,7 +25,6 @@ public abstract class BaseAgent implements IAgent {
 		setupAgent();
 		this.symbolNumber=symbols;
 		this.meaningNumber=meanings;
-		this.fitnessFunction = null;
 	}
 	
 	
@@ -104,8 +102,8 @@ public abstract class BaseAgent implements IAgent {
 		BigDecimal[] symbols = new BigDecimal[getSymbolNumber()];
 		Array2D<BigDecimal> sendMatrix = getSendMatrix();
 		
-		if(logger.isDebugEnabled())
-			logMatrix();
+//		if(logger.isDebugEnabled())
+//			logMatrix();
 
 
 		for(int i=0;i<getSymbolNumber(); i++)
@@ -141,8 +139,8 @@ public abstract class BaseAgent implements IAgent {
 
 		BigDecimal fitness = BigDecimal.ZERO;
 
-		if(this.fitnessFunction!=null)
-			fitness = this.fitnessFunction.computeFitness(sendMatrix);
+//		if(this.fitnessFunction!=null)
+//			fitness = this.fitnessFunction.computeFitness(sendMatrix);
 //		if(logger.isDebugEnabled())
 //		{
 //			logger.debug("Result Matrix:");
@@ -158,8 +156,8 @@ public abstract class BaseAgent implements IAgent {
 		BigDecimal[] meanings = new BigDecimal[getMeaningNumber()];
 		Array2D<BigDecimal> receptMatrix = getReceptionMatrix();
 		
-		if(logger.isDebugEnabled())
-			logMatrix();
+//		if(logger.isDebugEnabled())
+//			logMatrix();
 
 
 		for(int i=0;i<getMeaningNumber(); i++)
@@ -188,8 +186,6 @@ public abstract class BaseAgent implements IAgent {
 
 		BigDecimal fitness = BigDecimal.ZERO;
 
-		if(this.fitnessFunction!=null)
-			fitness = this.fitnessFunction.computeFitness(receptMatrix);
 
 //		if(logger.isDebugEnabled())
 //		{
@@ -203,15 +199,6 @@ public abstract class BaseAgent implements IAgent {
 	
 	
 	
-	@Override
-	public IFitnessFunction getFitnessFunction() {
-		return fitnessFunction;
-	}
-
-	@Override
-	public void setFitnessFunction(IFitnessFunction fitnessFunction) {
-		this.fitnessFunction = fitnessFunction;
-	}
 
 	/*
 	 * Mathematic fuctions

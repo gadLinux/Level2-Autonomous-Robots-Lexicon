@@ -6,6 +6,8 @@ import java.math.MathContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.level2.multiagent.autonomos.agents.fitness.IFitnessFunction;
+
 /**
  * This class implements the ACO algorithm as seen in class
  * 
@@ -13,6 +15,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ACOCommDecisor extends BaseCommDecisor implements ICommDecisor {
+
+	public ACOCommDecisor(IFitnessFunction func) {
+		super(func);
+	}
+
+
 
 	public static final Logger logger = LoggerFactory.getLogger(ACOCommDecisor.class);
 

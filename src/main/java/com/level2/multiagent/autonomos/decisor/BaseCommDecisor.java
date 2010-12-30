@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.level2.multiagent.autonomos.agents.IAgent;
+import com.level2.multiagent.autonomos.agents.fitness.IFitnessFunction;
 import com.level2.ojalgo.Probabilities;
 
 public abstract class BaseCommDecisor implements ICommDecisor {
@@ -14,11 +15,13 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 
 	protected BigDecimal kSpeaker;
 	protected BigDecimal kListener;
+	protected IFitnessFunction fitnessFunction;
 
-	public BaseCommDecisor()
+	public BaseCommDecisor(IFitnessFunction func)
 	{
 		kSpeaker = BigDecimal.valueOf(0.2);
 		kListener = BigDecimal.ONE.divide(BigDecimal.valueOf(2.0));
+		this.fitnessFunction = func;
 	}
 
 
@@ -34,6 +37,8 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 			logger.debug("New matrix:");
 			speaker.logMatrix();
 		}
+		if(this.fitnessFunction!=null)
+			this.fitnessFunction.computeFitness(speaker);
 		//
 		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
@@ -49,9 +54,8 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 			logger.debug("New matrix:");
 			listener.logMatrix();
 		}
-		//
-		//listener.getMeanings(symbolIndex);
-		//symbolRow = speaker.getSymbols(meaningIndex);
+		if(this.fitnessFunction!=null)
+			this.fitnessFunction.computeFitness(listener);
 	}
 
 	/**
@@ -64,23 +68,32 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 		int meanings=speaker.getMeaningNumber();
 		int timesSuccess=0;
 		
+		if(logger.isDebugEnabled())
+		{
+			speaker.logMatrix();
+			listener.logMatrix();
+		}
+		
 		for(int i=0; i<meanings; i++)
 		{
-			int symbol = getTransmittedSymbolIndex(speaker, i);
-			int receptMeaning = getMeaningIndexForSymbol(listener, symbol);
+			int symbolIndex = getSymbolIndexForMeaning(speaker, i);
+			int receptMeaningIndex = getMeaningIndexForSymbol(listener, symbolIndex);
 
-			if(symbol==receptMeaning)
+			/*
+			 * If meanings are equivalent
+			 */
+			if(i==receptMeaningIndex)
 			{
 				timesSuccess++;
 				logger.debug("Meaning understood!");
-				updateSpeaker(speaker, i, symbol, true);
-				updateListener(listener,i,receptMeaning, true);
+				updateSpeaker(speaker, i, symbolIndex, true);
+				updateListener(listener,receptMeaningIndex,symbolIndex, true);
 			}
 			else
 			{
 				logger.debug("I don't understand!");
-				updateSpeaker(speaker, i, symbol, false);
-				updateListener(listener,i,receptMeaning, false);
+				updateSpeaker(speaker, i, symbolIndex, false);
+				updateListener(listener,i,receptMeaningIndex, false);
 			}
 		}
 		logger.debug(String.format("Finish chatting agent %d and agent %d", speaker.getAgentNumber(), listener.getAgentNumber()));
@@ -121,7 +134,7 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 	 * @param meaningIndex
 	 * @return
 	 */
-	protected int getTransmittedSymbolIndex(IAgent speaker, int meaningIndex)
+	protected int getSymbolIndexForMeaning(IAgent speaker, int meaningIndex)
 	{
 		int symbols=speaker.getSymbolNumber(), indexSymbol = -1;
 		BigDecimal[] symbolRow = speaker.getSymbols(meaningIndex);

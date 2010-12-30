@@ -2,10 +2,10 @@ package com.level2.multiagent.autonomos.agents.fitness;
 
 import java.math.BigDecimal;
 
-import org.ojalgo.array.Array2D;
+import com.level2.multiagent.autonomos.agents.IAgent;
 
 public interface IFitnessFunction {
 
-	public BigDecimal computeFitness(Array2D<BigDecimal> commMatrix);
+	public BigDecimal computeFitness(IAgent agent);
 
 }

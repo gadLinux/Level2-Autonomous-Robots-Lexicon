@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.level2.multiagent.autonomos.agents.fitness.IFitnessFunction;
+
 /**
  * This class implements the LRI algorithm as seen in class
  * 
@@ -12,6 +14,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class LRICommDecisor extends BaseCommDecisor implements ICommDecisor {
+
+	public LRICommDecisor(IFitnessFunction func) {
+		super(func);
+	}
+
+
 
 	public static final Logger logger = LoggerFactory.getLogger(LRICommDecisor.class);
 

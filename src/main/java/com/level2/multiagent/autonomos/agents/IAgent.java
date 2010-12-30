@@ -30,7 +30,5 @@ public interface IAgent {
 	public void setMeaningNumber(int meaningNumber);
 	public boolean meaningSended(BigDecimal[] symbols);
 	public boolean symbolSended(BigDecimal[] meanings);
-	IFitnessFunction getFitnessFunction();
-	void setFitnessFunction(IFitnessFunction fitnessFunction);
 	
 }

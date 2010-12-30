@@ -44,11 +44,11 @@ public class DeterministicAgent extends BaseAgent {
 	@Override
 	public void initializeMatrices() {
 		commMatrix = Array2D.makeBig(this.getMeaningNumber(), this.getSymbolNumber());
-//		randomizeMatrix(commMatrix);
-		if(this.getAgentNumber()==0)
-			determineMatrix(commMatrix, false);
-		else
-			determineMatrix(commMatrix, true);
+		randomizeMatrix(commMatrix);
+//		if(this.getAgentNumber()==0)
+//			determineMatrix(commMatrix, false);
+//		else
+//			determineMatrix(commMatrix, true);
 	}
 
 	

@@ -11,6 +11,7 @@ import com.level2.multiagent.autonomos.agents.DeterministicAgent;
 import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.multiagent.autonomos.agents.ProbabilisticAgent;
 import com.level2.multiagent.autonomos.agents.fitness.DiagonalFitnessFunction;
+import com.level2.multiagent.autonomos.agents.fitness.NearOneFitnessFunction;
 import com.level2.multiagent.autonomos.decisor.ACOCommDecisor;
 import com.level2.multiagent.autonomos.decisor.BaseCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
@@ -37,7 +38,8 @@ public class Dimiurgos {
 		{
 			
 			IAgent newAgent = new DeterministicAgent(3,3);
-			newAgent.setFitnessFunction(new DiagonalFitnessFunction(newAgent));
+			//newAgent.setFitnessFunction();
+			//new DiagonalFitnessFunction(newAgent)
 			
 			//newAgent.initialize();
 			
@@ -48,9 +50,9 @@ public class Dimiurgos {
 	
 	public void run()
 	{
-		ICommDecisor ACODecisor = new ACOCommDecisor();
+		ICommDecisor ACODecisor = new ACOCommDecisor(new NearOneFitnessFunction());
 		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
-		int iterations = 1000;
+		int iterations = 5000;
 		boolean stopCondition=false;
 		
 		while(!stopCondition && sched.doIteration()<iterations)
