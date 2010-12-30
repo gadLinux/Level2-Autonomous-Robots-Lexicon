@@ -1,6 +1,7 @@
 package com.level2.multiagent.autonomos.agents.fitness;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +30,6 @@ public class NearOneFitnessFunction implements IFitnessFunction {
 		fitness = BigDecimal.ZERO;
 		if(agent.getSymbolNumber()>0)
 		{
-			logger.debug("Computing fitness for agent {} with matrix:", agent.getAgentNumber());
-			agent.logMatrix();
 			for(int i=0; i<agent.getSymbolNumber(); i++)
 			{
 				BigDecimal[] symbols = agent.getSymbols(i);
@@ -40,11 +39,15 @@ public class NearOneFitnessFunction implements IFitnessFunction {
 				int indexMeanings = getBigger(meanings);
 				if(indexMeanings==i)
 				{
-					fitness.add(BigDecimal.ONE);
+					fitness = fitness.add(BigDecimal.ONE);
 				}
 			}
-
-			fitness.divide(BigDecimal.valueOf(agent.getSymbolNumber()));
+			BigDecimal divisor = new BigDecimal(agent.getSymbolNumber());
+			if(divisor.compareTo(BigDecimal.ZERO)!=0)
+			{
+				fitness = fitness.divide(divisor, 5, RoundingMode.HALF_UP);
+				logger.debug("Computing fitness for agent {} with matrix {}", agent.getAgentNumber(), fitness);
+			}
 		}
 		return fitness;
 	}
@@ -58,7 +61,7 @@ public class NearOneFitnessFunction implements IFitnessFunction {
 		int indexVal = 0;
 		for(int i=0;i<data.length;i++)
 		{
-			if(data[i].compareTo(data[indexVal])<=0)
+			if(data[i].compareTo(data[indexVal])>=0)
 			{
 				indexVal = i;
 			}

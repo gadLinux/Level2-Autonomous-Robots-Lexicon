@@ -41,7 +41,7 @@ public class ACOCommDecisor extends BaseCommDecisor implements ICommDecisor {
 
 		BigDecimal Bk, p;
 
-		p = BigDecimal.valueOf(0.70); // Param to be set
+		p = BigDecimal.valueOf(0.25); // Param to be set
 
 		for(int i=0; i<values.length;i++)
 		{

@@ -44,7 +44,9 @@ public class PlainPopulationScheduler implements IBasicPopulationScheduler {
 					else
 						stats.chatError();
 				}
+				
 			}
+			stats.calculateFitness(population);
 			stats.logStepStatistics();
 		}
 		return stats.iterationDone();

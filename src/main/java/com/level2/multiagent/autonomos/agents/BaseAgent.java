@@ -19,6 +19,7 @@ public abstract class BaseAgent implements IAgent {
 	private int agentNumber;
 	private Random random;
 	private int symbolNumber, meaningNumber;
+	private BigDecimal fitness = BigDecimal.ZERO;
 
 	public BaseAgent(int symbols, int meanings)
 	{
@@ -39,7 +40,17 @@ public abstract class BaseAgent implements IAgent {
 		logger.debug("New agent spawned!");
 	}
 	
-	
+	@Override
+	public BigDecimal getFitness() {
+		return fitness;
+	}
+
+	@Override
+	public void setFitness(BigDecimal fitness) {
+		this.fitness = fitness;
+	}
+
+
 	@Override 
 	public Double generateRandom()
 	{

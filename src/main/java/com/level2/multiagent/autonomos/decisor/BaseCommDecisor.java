@@ -38,7 +38,10 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 			speaker.logMatrix();
 		}
 		if(this.fitnessFunction!=null)
-			this.fitnessFunction.computeFitness(speaker);
+		{
+			BigDecimal fitnessValue = this.fitnessFunction.computeFitness(speaker);
+			speaker.setFitness(fitnessValue);
+		}
 		//
 		//symbolRow = speaker.getSymbols(meaningIndex);
 	}
@@ -55,7 +58,11 @@ public abstract class BaseCommDecisor implements ICommDecisor {
 			listener.logMatrix();
 		}
 		if(this.fitnessFunction!=null)
-			this.fitnessFunction.computeFitness(listener);
+		{
+			BigDecimal fitnessValue = this.fitnessFunction.computeFitness(listener);
+			listener.setFitness(fitnessValue);
+		}
+			
 	}
 
 	/**

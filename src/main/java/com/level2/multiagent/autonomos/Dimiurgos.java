@@ -9,13 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.level2.multiagent.autonomos.agents.DeterministicAgent;
 import com.level2.multiagent.autonomos.agents.IAgent;
-import com.level2.multiagent.autonomos.agents.ProbabilisticAgent;
-import com.level2.multiagent.autonomos.agents.fitness.DiagonalFitnessFunction;
 import com.level2.multiagent.autonomos.agents.fitness.NearOneFitnessFunction;
 import com.level2.multiagent.autonomos.decisor.ACOCommDecisor;
-import com.level2.multiagent.autonomos.decisor.BaseCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
-import com.level2.multiagent.autonomos.decisor.LRICommDecisor;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationScheduler;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationStatistics;
 import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
@@ -23,7 +19,7 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(2);
+	private Integer totalAgentNumber = new Integer(100);
 	private ArrayList<IAgent> agents;
 	private Integer iterationsSucceful= new Integer(0);
 

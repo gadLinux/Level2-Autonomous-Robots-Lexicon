@@ -1,10 +1,14 @@
 package com.level2.multiagent.autonomos.scheduler;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.multiagent.autonomos.decisor.LRICommDecisor;
 
 public class BasicPopulationStatistics implements IBasicPopulationStatistics {
@@ -18,15 +22,17 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	protected int iteration;
 	protected int chats;
 	protected int chatsSucceded;
+	protected BigDecimal totalFitness = BigDecimal.ZERO;
+	protected int agentsNumber=0;
 
 	public BasicPopulationStatistics(int chats)
 	{
 		chatsPerRound=chats;
 		loggerResult.info("# This file contains information from one execution");
 		loggerResult.info("# Author: Gonzalo Aguilar Delgado <gaguilar@aguilardelgado.com>");
-		loggerResult.info("# Iteration\tChats\tSucceded\tError");
-		loggerResult.info(String.format("\t%d\t\t%d\t%d\t\t%d", 
-				iteration, totalChats, this.chatsSucceded, (this.totalChats-this.chatsSucceded)));
+		loggerResult.info("# Iteration\tChats\tSucceded\tError\tMeanFitness");
+		loggerResult.info(String.format("\t%d\t\t%d\t%d\t\t%d\t\t%s", 
+				iteration, totalChats, this.chatsSucceded, (this.totalChats-this.chatsSucceded), getMeanFitness().toPlainString()));
 		totalChats=0;
 	}
 	
@@ -43,27 +49,48 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 	public void logStatistics()
 	{
 		
-		logger.info(String.format("Round %d, chats in this round %d -> Succeded %d vs Error %d", 
-					iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
+		logger.info(String.format("Round %d, chats in this round %d -> Succeded %d vs Error %d (Fitness %s)", 
+					iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded), getMeanFitness().toPlainString()));
 		
 //		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
 //				iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
-		loggerResult.info(String.format(Locale.US, "\t%d\t%d\t%d\t\t%d", 
-				iteration, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+		loggerResult.info(String.format(Locale.US, "\t%d\t%d\t%d\t\t%d\t\t%s", 
+				iteration, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
 	}
 	
 	@Override
 	public void logStepStatistics()
 	{
 		double  percentage= new Double(chats)/new Double(this.chatsPerRound);
-		logger.info(String.format(Locale.US, "Step Iteration %d [%f], chats %d -> Succeded %d vs Error %d", 
-				iteration, percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+		logger.info(String.format(Locale.US, "Step Iteration %d [%f], chats %d -> Succeded %d vs Error %d (Fitness %s)", 
+				iteration, percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
 		
-		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d", 
-				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded)));
+		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d\t\t%s", 
+				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
 	
 	}
 
+	@Override
+	public void calculateFitness(List<IAgent> population)
+	{
+		
+		agentsNumber = population.size();
+		totalFitness=BigDecimal.ZERO;
+		for(int agentIndex=0;agentIndex<agentsNumber;agentIndex++)
+		{
+			totalFitness = totalFitness.add(population.get(agentIndex).getFitness());
+		}
+	}
+	
+	public BigDecimal getMeanFitness()
+	{
+		BigDecimal mean = BigDecimal.ZERO;
+		if(agentsNumber>0)
+		{
+			mean = totalFitness.divide(new BigDecimal(agentsNumber),2, RoundingMode.HALF_UP);
+		}
+		return mean;
+	}
 
 	public void chatSucceded()
 	{
