@@ -2,7 +2,6 @@ package com.level2.multiagent.autonomos.agents.fitness;
 
 import java.math.BigDecimal;
 
-import org.ojalgo.array.Array2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
