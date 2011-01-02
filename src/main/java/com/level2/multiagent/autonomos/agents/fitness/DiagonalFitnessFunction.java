@@ -12,12 +12,9 @@ public class DiagonalFitnessFunction implements IFitnessFunction {
 	public static final Logger logger = LoggerFactory.getLogger(DiagonalFitnessFunction.class);
 
 	private BigDecimal fitness;
-	private int meanings, symbols;
 
 	public DiagonalFitnessFunction(IAgent agent)
 	{
-		this.meanings = agent.getMeaningNumber();
-		this.symbols = agent.getSymbolNumber();
 		fitness=BigDecimal.ZERO;
 	}
 
@@ -28,17 +25,17 @@ public class DiagonalFitnessFunction implements IFitnessFunction {
 	 * @return
 	 */
 	@Override
-	public BigDecimal computeFitness(Array2D<BigDecimal> commMatrix)
+	public BigDecimal computeFitness(IAgent agent)
 	{
 		fitness = BigDecimal.ZERO;
-		if(symbols>0)
+		if(agent.getSymbolNumber()>0)
 		{
-			for(int i=0; i<symbols; i++)
+			for(int i=0; i<agent.getSymbolNumber(); i++)
 			{
-				fitness.add(commMatrix.get(i, i));
+				fitness.add(agent.getSendMatrix().get(i, i));
 			}
 
-			fitness.divide(BigDecimal.valueOf(symbols));
+			fitness.divide(BigDecimal.valueOf(agent.getSymbolNumber()));
 		}
 		return fitness;
 	}
@@ -50,23 +47,6 @@ public class DiagonalFitnessFunction implements IFitnessFunction {
 	public void setFitness(BigDecimal fitness) {
 		this.fitness = fitness;
 	}
-
-	public int getMeanings() {
-		return meanings;
-	}
-
-	public void setMeanings(int meanings) {
-		this.meanings = meanings;
-	}
-
-	public int getSymbols() {
-		return symbols;
-	}
-
-	public void setSymbols(int symbols) {
-		this.symbols = symbols;
-	}
-
 
 
 }

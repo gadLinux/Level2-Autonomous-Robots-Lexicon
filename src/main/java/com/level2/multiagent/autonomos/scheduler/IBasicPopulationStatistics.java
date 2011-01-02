@@ -10,12 +10,16 @@ public interface IBasicPopulationStatistics {
 
 	int iterationDone();
 
-	double getSucceedRatio();
+	Double getSucceedRatio();
 
 	void resetIterationStats();
 
 	void logStepStatistics();
 
 	void calculateFitness(List<IAgent> population);
+
+	Double getErrorRatio();
+
+	Double getReferenceRatio();
 
 }

@@ -31,13 +31,15 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 		loggerResult.info("# This file contains information from one execution");
 		loggerResult.info("# Author: Gonzalo Aguilar Delgado <gaguilar@aguilardelgado.com>");
 		loggerResult.info("# Iteration\tChats\tSucceded\tError\tMeanFitness");
-		loggerResult.info(String.format("\t%d\t\t%d\t%d\t\t%d\t\t%s", 
-				iteration, totalChats, this.chatsSucceded, (this.totalChats-this.chatsSucceded), getMeanFitness().toPlainString()));
+//		loggerResult.info(String.format("\t%d\t\t%d\t%d\t\t%d\t\t%s", 
+//				iteration, totalChats, this.chatsSucceded, (this.totalChats-this.chatsSucceded), getMeanFitness().toPlainString()));
+		loggerResult.info(String.format("\t%d\t\t%f\t%f\t\t%f\t\t%s", 
+				iteration, getReferenceRatio(), getSucceedRatio(), getErrorRatio(), getMeanFitness().toPlainString()));
 		totalChats=0;
 	}
 	
 	@Override
-	public double getSucceedRatio()
+	public Double getSucceedRatio()
 	{
 		Double result = 0.0;
 		if(this.chats>0)
@@ -45,6 +47,24 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 		return result;
 	}
 
+	@Override
+	public Double getErrorRatio()
+	{
+		Double result = 0.0;
+		if(this.chats>0)
+			result = new Double(this.chats - this.chatsSucceded)/new Double(this.chats);
+		return result;
+	}
+	
+	@Override
+	public Double getReferenceRatio()
+	{
+		Double result = 0.0;
+		if(this.chats>0)
+			result = (getErrorRatio() -  getSucceedRatio()) /2.0;
+		return result;
+	}
+	
 	@Override
 	public void logStatistics()
 	{
@@ -54,9 +74,13 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 		
 //		loggerResult.info(String.format("\t%d\t%d\t%d\t\t%d", 
 //				iteration, chats, this.chatsSucceded, (this.chats-this.chatsSucceded)));
-		loggerResult.info(String.format(Locale.US, "\t%d\t%d\t%d\t\t%d\t\t%s", 
-				iteration, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
+//		loggerResult.info(String.format(Locale.US, "\t%d\t%d\t%d\t\t%d\t\t%s", 
+//				iteration, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
+		loggerResult.info(String.format(Locale.US, "\t%d\t%f\t%f\t\t%f\t\t%s", 
+				iteration, getReferenceRatio(), getSucceedRatio(), getErrorRatio(), getMeanFitness().toPlainString()));
 	}
+	
+	
 	
 	@Override
 	public void logStepStatistics()
@@ -65,9 +89,12 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 		logger.info(String.format(Locale.US, "Step Iteration %d [%f], chats %d -> Succeded %d vs Error %d (Fitness %s)", 
 				iteration, percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
 		
-		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d\t\t%s", 
-				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
-	
+//		loggerResult.info(String.format(Locale.US, "\t%f\t%d\t%d\t\t%d\t\t%s", 
+//				iteration+percentage, totalChats, this.totalChatsSucceded, (this.totalChats-this.totalChatsSucceded), getMeanFitness().toPlainString()));
+
+		loggerResult.info(String.format(Locale.US, "\t%f\t%f\t%f\t\t%f\t\t%s", 
+				iteration+percentage, getReferenceRatio(), getSucceedRatio(), getErrorRatio(), getMeanFitness().toPlainString()));
+
 	}
 
 	@Override

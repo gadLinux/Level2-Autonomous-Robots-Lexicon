@@ -19,9 +19,10 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(100);
+	private Integer totalAgentNumber = new Integer(200);
 	private ArrayList<IAgent> agents;
-	private Integer iterationsSucceful= new Integer(0);
+	private Integer iterationsSucceful= new Integer(50);
+	private Integer symbolNumber= new Integer(3);
 
 	public Dimiurgos(OptionSet optionSet)
 	{
@@ -33,12 +34,7 @@ public class Dimiurgos {
 		for(Integer i = 0; i<totalAgentNumber; i++)
 		{
 			
-			IAgent newAgent = new DeterministicAgent(3,3);
-			//newAgent.setFitnessFunction();
-			//new DiagonalFitnessFunction(newAgent)
-			
-			//newAgent.initialize();
-			
+			IAgent newAgent = new DeterministicAgent(symbolNumber,symbolNumber);
 			agents.add(newAgent);
 			logger.debug("Created {} agent of a total of {}", newAgent.getAgentNumber(), totalAgentNumber);
 		}
@@ -48,10 +44,9 @@ public class Dimiurgos {
 	{
 		ICommDecisor ACODecisor = new ACOCommDecisor(new NearOneFitnessFunction());
 		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
-		int iterations = 5000;
 		boolean stopCondition=false;
 		
-		while(!stopCondition && sched.doIteration()<iterations)
+		while(!stopCondition && sched.doIteration()<iterationsSucceful)
 		{
 			//logger.debug("Iteration {} done!", sched.getCurrentIteration());
 			sched.logStats();
