@@ -1,6 +1,7 @@
 package com.level2.multiagent.autonomos;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import joptsimple.OptionSet;
 
@@ -21,8 +22,8 @@ public class Dimiurgos {
 	
 	private Integer totalAgentNumber = new Integer(200);
 	private ArrayList<IAgent> agents;
-	private Integer iterationsSucceful= new Integer(50);
-	private Integer symbolNumber= new Integer(3);
+	private Integer iterationsSucceful= new Integer(200);
+	private Integer symbolNumber= new Integer(5);
 
 	public Dimiurgos(OptionSet optionSet)
 	{
@@ -45,16 +46,18 @@ public class Dimiurgos {
 		ICommDecisor ACODecisor = new ACOCommDecisor(new NearOneFitnessFunction());
 		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
 		boolean stopCondition=false;
-		
+		IBasicPopulationStatistics stats = sched.getStats();
 		while(!stopCondition && sched.doIteration()<iterationsSucceful)
 		{
 			//logger.debug("Iteration {} done!", sched.getCurrentIteration());
 			sched.logStats();
-			IBasicPopulationStatistics stats = sched.getStats();
+			
 			logger.info(String.format("Current succes ratio %f", stats.getSucceedRatio()));
 			stopCondition = checkStopCondition(stats);
 			stats.resetIterationStats();
 		}
+		logger.info(String.format(Locale.US, "First full fitness reached at iteration %f, last %f", 
+				stats.getFirstIterationFullFitness(), stats.getLastIterationFullFitness()));
 			
 	}
 	
