@@ -1,0 +1,77 @@
+=============================================
+This is the autonomous-robots-lexicon project
+=============================================
+
+License (see also LICENSE.txt)
+==============================
+
+Collective work: Copyright 2007 The Apache Software Foundation.
+
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Overview
+=========
+
+This is a small project inteded to serve as framework for testing and implementing
+different reinforcement learning algorithms for lexicon discovery in autonomous
+robots.
+
+This was developed while studing MUIA Master at UPM - Madrid.
+
+And provides a plugable system for developing several shared modules for:
+
+	1.- Different types of Agents (Two provided Deterministic and Probabilistics)
+	2.- Different fitness functions to be plugged based on algorithm or agent.
+	3.- Different decisors (Algorithms to make agents learn).
+	4.- Different schedulers. One is provided that will make talk any agent with
+	the others in a sequential way.
+
+I also provide a small script to diagram solutions using gnuplot. 
+
+> gnuplot
+# load "plotgraph.p"
+
+Will graph the last result executed.
+
+The drawgraph.p is a convenience script to export results to eps.
+
+OJAlgo functions are provided to extend the framework in the future.
+
+
+Download the project
+=========================
+
+You can download the project from [git@github.com:gadLinux/Level2-Autonomous-Robots-Lexicon.git].
+
+Install the project
+===================
+
+- Precise instructions will be provided after everything is in place.
+
+
+
+Get ready for Eclipse
+=====================
+
+- Execute "mvn eclipse:eclipse" from the project root folder. By this way, you project can be imported into Eclipse. 
+- Start Eclipse and import the project (menu File/import, select general/existing project in the workspace, than select the project root directory).
+
+Now you are ready to modify the project from Eclipse. 
+
+
+
+
+
