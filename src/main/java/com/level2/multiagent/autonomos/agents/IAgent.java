@@ -32,5 +32,6 @@ public interface IAgent {
 	public boolean symbolSended(BigDecimal[] meanings);
 	BigDecimal getFitness();
 	void setFitness(BigDecimal fitness);
+	BigDecimal generateProbabiltyValue(BigDecimal min);
 	
 }

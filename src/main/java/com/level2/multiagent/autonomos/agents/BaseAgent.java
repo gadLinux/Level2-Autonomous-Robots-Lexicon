@@ -285,7 +285,8 @@ public abstract class BaseAgent implements IAgent {
 	 * @param min Summatory of the values
 	 * @return
 	 */
-	protected BigDecimal generateProbabiltyValue(BigDecimal min)
+	@Override
+	public BigDecimal generateProbabiltyValue(BigDecimal min)
 	{
 		//get the range, casting to long to avoid overflow problems
 		BigDecimal range = BigDecimal.ONE.subtract(min);

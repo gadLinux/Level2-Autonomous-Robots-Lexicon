@@ -118,8 +118,9 @@ public class BasicPopulationStatistics implements IBasicPopulationStatistics {
 		BigDecimal mean = BigDecimal.ZERO;
 		if(agentsNumber>0)
 		{
-			mean = totalFitness.divide(new BigDecimal(agentsNumber),2, RoundingMode.HALF_UP);
-			if(mean.compareTo(BigDecimal.ONE)>=0)
+			mean = totalFitness.divide(new BigDecimal(agentsNumber),4, RoundingMode.HALF_UP);
+			// FIXME This need to be set by decisor as bound is given by its information
+			if(mean.compareTo(new BigDecimal(2))>=0)
 			{
 				double  percentage= new Double(chats)/new Double(this.chatsPerRound);
 				

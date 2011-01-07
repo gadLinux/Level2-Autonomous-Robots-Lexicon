@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import com.level2.multiagent.autonomos.agents.DeterministicAgent;
 import com.level2.multiagent.autonomos.agents.IAgent;
 import com.level2.multiagent.autonomos.agents.fitness.NearOneFitnessFunction;
+import com.level2.multiagent.autonomos.agents.fitness.UnboundFitnessFunction;
 import com.level2.multiagent.autonomos.decisor.ACOCommDecisor;
 import com.level2.multiagent.autonomos.decisor.ICommDecisor;
+import com.level2.multiagent.autonomos.decisor.IncrementalCommDecisor;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationScheduler;
 import com.level2.multiagent.autonomos.scheduler.IBasicPopulationStatistics;
 import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
@@ -20,10 +22,11 @@ import com.level2.multiagent.autonomos.scheduler.PlainPopulationScheduler;
 public class Dimiurgos {
 	public static final Logger logger = LoggerFactory.getLogger(Dimiurgos.class);
 	
-	private Integer totalAgentNumber = new Integer(200);
+	private Integer totalAgentNumber = new Integer(10);
 	private ArrayList<IAgent> agents;
-	private Integer iterationsSucceful= new Integer(200);
-	private Integer symbolNumber= new Integer(5);
+	private Integer iterationsSucceful= new Integer(0);
+	private Integer Maxiterations= new Integer(2000);
+	private Integer symbolNumber= new Integer(2);
 
 	public Dimiurgos(OptionSet optionSet)
 	{
@@ -43,11 +46,12 @@ public class Dimiurgos {
 	
 	public void run()
 	{
-		ICommDecisor ACODecisor = new ACOCommDecisor(new NearOneFitnessFunction());
-		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
+		ICommDecisor Decisor = new IncrementalCommDecisor(new UnboundFitnessFunction());
+//		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, ACODecisor);
+		IBasicPopulationScheduler sched = new PlainPopulationScheduler(agents, Decisor);
 		boolean stopCondition=false;
 		IBasicPopulationStatistics stats = sched.getStats();
-		while(!stopCondition && sched.doIteration()<iterationsSucceful)
+		while(!stopCondition && sched.doIteration()<Maxiterations)
 		{
 			//logger.debug("Iteration {} done!", sched.getCurrentIteration());
 			sched.logStats();
@@ -69,7 +73,7 @@ public class Dimiurgos {
 		if(stats.getSucceedRatio()>= 0.98)
 		{
 			iterationsSucceful++;
-			if(iterationsSucceful>=2)
+			if(iterationsSucceful>=10)
 			{
 				stopCondition=true;
 			}
